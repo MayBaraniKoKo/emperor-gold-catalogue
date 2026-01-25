@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroBg from "@/assets/hero-bg.jpg?url";
 
 const HeroSection = () => {
   return (
@@ -26,7 +26,7 @@ const HeroSection = () => {
           </span>
           
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-gold-50 mb-6 leading-tight">
-            <span className="text-gold-gradient">42</span> Emperor
+            <span className="text-gold-gradient">United</span> 42
           </h1>
           
           <p className="text-lg md:text-xl text-gold-100/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
@@ -42,7 +42,7 @@ const HeroSection = () => {
               </Button>
             </Link>
             <Link to="/categories">
-              <Button size="lg" variant="outline" className="border-gold-400/50 text-gold-50 hover:bg-gold-500/10 px-8 py-6 text-base">
+              <Button size="lg" variant="outline" className="border-gold-400/50 text-gold-400 hover:bg-gold-500/10 px-8 py-6 text-base">
                 View Categories
               </Button>
             </Link>

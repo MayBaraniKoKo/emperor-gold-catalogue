@@ -64,6 +64,18 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
+---
+
+## Server-side Orders (Supabase)
+
+This project can persist orders server-side using Supabase. Steps to enable:
+
+1. Apply the provided SQL migration in `supabase/migrations/20260114000100_create_orders_table.sql` to create the `orders` table.
+2. Ensure the `orders` table has a suitable RLS policy. The migration includes a permissive insert policy for demo/testing, but in production you should require authenticated users or server-side validation.
+3. The checkout page (`src/pages/Checkout.tsx`) attempts to insert orders into Supabase and falls back to localStorage if the insert fails.
+
+If you'd like, I can also add a server-side endpoint or use a service role key to securely accept unauthenticated orders and/or send confirmation emails.
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!
@@ -71,3 +83,11 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+---
+
+## Cart behavior
+
+- The site includes a simple client-side cart (persisted in the browser's `localStorage`).
+- Add items from the product detail page. The cart is available at `/cart` and via the cart icon in the header.
+- Cart persistence is a convenience for a demo; for production you may want server-side carts tied to user accounts.

@@ -1,7 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Wine, User, LogOut } from "lucide-react";
+import { Wine, User, LogOut, ShoppingCart } from "lucide-react";
+import logoUrl from "@/assets/United42.jpg"
+import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+
+const CartCountBadge = () => {
+  const { totalItems } = useCart();
+  if (!totalItems) return null;
+  return (
+    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 rounded-full bg-destructive text-xs text-destructive-foreground">
+      {totalItems}
+    </span>
+  );
+};
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -17,11 +29,9 @@ const Header = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 gold-gradient rounded-full flex items-center justify-center shadow-gold">
-              <Wine className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img src={logoUrl} alt="United 42 logo" className="w-10 h-10 rounded-full object-cover shadow-gold" />
             <div className="flex flex-col">
-              <span className="font-display text-xl font-bold text-gold-gradient">42 Emperor</span>
+              <span className="font-display text-xl font-bold text-gold-gradient">United 42</span>
               <span className="text-xs text-muted-foreground tracking-widest uppercase">Premium Spirits</span>
             </div>
           </Link>
@@ -39,6 +49,14 @@ const Header = () => {
           </nav>
 
           <div className="flex items-center gap-4">
+            <Link to="/cart" className="relative">
+              <Button variant="ghost" size="sm" className="p-2">
+                <ShoppingCart className="w-5 h-5" />
+              </Button>
+              {/* badge */}
+              <CartCountBadge />
+            </Link>
+
             {user ? (
               <div className="flex items-center gap-3">
                 <Link to="/admin">

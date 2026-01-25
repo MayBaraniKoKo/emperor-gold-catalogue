@@ -9,6 +9,8 @@ export interface Product {
   name: string;
   description: string | null;
   price: number;
+  original_price: number | null;
+  discount: number;
   image_url: string | null;
   alcohol_percentage: number | null;
   volume_ml: number | null;
@@ -26,6 +28,8 @@ export interface ProductInput {
   name: string;
   description?: string;
   price: number;
+  original_price?: number | null;
+  discount?: number;
   image_url?: string;
   alcohol_percentage?: number;
   volume_ml?: number;

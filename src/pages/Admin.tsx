@@ -7,6 +7,8 @@ import { Wine, Layers, Package, Home, LogOut } from "lucide-react";
 import CategoriesAdmin from "@/components/admin/CategoriesAdmin";
 import SubcategoriesAdmin from "@/components/admin/SubcategoriesAdmin";
 import ProductsAdmin from "@/components/admin/ProductsAdmin";
+import OrdersAdmin from "@/components/admin/OrdersAdmin";
+import logoUrl from "@/assets/United42.jpg";
 
 const Admin = () => {
   const { user, loading, signOut } = useAuth();
@@ -31,11 +33,9 @@ const Admin = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 gold-gradient rounded-full flex items-center justify-center shadow-gold">
-                <Wine className="w-5 h-5 text-primary-foreground" />
-              </div>
+              <img src={logoUrl} alt="United 42 logo" className="w-10 h-10 rounded-full object-cover shadow-gold" />
               <div>
-                <span className="font-display text-xl font-bold text-gold-gradient">42 Emperor</span>
+                <span className="font-display text-xl font-bold text-gold-gradient">United 42</span>
                 <span className="block text-xs text-muted-foreground">Content Management</span>
               </div>
             </div>
@@ -81,6 +81,10 @@ const Admin = () => {
               <Package className="w-4 h-4" />
               Products
             </TabsTrigger>
+            <TabsTrigger value="orders" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Home className="w-4 h-4" />
+              Orders
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="categories">
@@ -93,6 +97,10 @@ const Admin = () => {
 
           <TabsContent value="products">
             <ProductsAdmin />
+          </TabsContent>
+
+          <TabsContent value="orders">
+            <OrdersAdmin />
           </TabsContent>
         </Tabs>
       </main>

@@ -87,6 +87,8 @@ const CategoryDetail = () => {
                   name={product.name}
                   description={product.description}
                   price={Number(product.price)}
+                  originalPrice={product.original_price ? Number(product.original_price) : undefined}
+                  discount={product.discount || 0}
                   imageUrl={product.image_url}
                   alcoholPercentage={product.alcohol_percentage}
                   volumeMl={product.volume_ml}

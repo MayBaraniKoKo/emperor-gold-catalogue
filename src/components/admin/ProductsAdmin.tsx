@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -22,13 +24,38 @@ const ProductsAdmin = () => {
   
   const [isOpen, setIsOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [formData, setFormData] = useState({ category_id: "", subcategory_id: "", name: "", description: "", price: "", image_url: "", alcohol_percentage: "", volume_ml: "", origin_country: "", is_featured: false, in_stock: true });
+  const [formData, setFormData] = useState({ category_id: "", subcategory_id: "", name: "", description: "", price: "", original_price: "", discount: "0", image_url: "", alcohol_percentage: "", volume_ml: "", origin_country: "", is_featured: false, in_stock: true });
 
-  const resetForm = () => setFormData({ category_id: "", subcategory_id: "", name: "", description: "", price: "", image_url: "", alcohol_percentage: "", volume_ml: "", origin_country: "", is_featured: false, in_stock: true });
+  const { toast } = useToast();
+
+  const resetForm = () => setFormData({ category_id: "", subcategory_id: "", name: "", description: "", price: "", original_price: "", discount: "0", image_url: "", alcohol_percentage: "", volume_ml: "", origin_country: "", is_featured: false, in_stock: true });
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Create a safe unique filename
+      const ext = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${ext}`;
+      const filePath = `${fileName}`;
+
+      const { data, error } = await supabase.storage.from('products').upload(filePath, file, { upsert: true });
+      if (error) throw error;
+
+      const { data: publicData } = await supabase.storage.from('products').getPublicUrl(filePath);
+      const publicUrl = (publicData as any)?.publicUrl ?? "";
+
+      setFormData((prev) => ({ ...prev, image_url: publicUrl }));
+      toast({ title: 'Image uploaded', description: 'Product image uploaded successfully' });
+    } catch (err: any) {
+      toast({ title: 'Upload failed', description: err.message || String(err), variant: 'destructive' });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { ...formData, price: parseFloat(formData.price), alcohol_percentage: formData.alcohol_percentage ? parseFloat(formData.alcohol_percentage) : undefined, volume_ml: formData.volume_ml ? parseInt(formData.volume_ml) : undefined, subcategory_id: formData.subcategory_id || null };
+    const payload = { ...formData, price: parseFloat(formData.price), original_price: formData.original_price ? parseFloat(formData.original_price) : undefined, discount: parseFloat(formData.discount) || 0, alcohol_percentage: formData.alcohol_percentage ? parseFloat(formData.alcohol_percentage) : undefined, volume_ml: formData.volume_ml ? parseInt(formData.volume_ml) : undefined, subcategory_id: formData.subcategory_id || null };
     if (editingProduct) { await updateProduct.mutateAsync({ id: editingProduct.id, ...payload }); }
     else { await createProduct.mutateAsync(payload); }
     setIsOpen(false); setEditingProduct(null); resetForm();
@@ -36,7 +63,7 @@ const ProductsAdmin = () => {
 
   const handleEdit = (p: Product) => {
     setEditingProduct(p);
-    setFormData({ category_id: p.category_id, subcategory_id: p.subcategory_id || "", name: p.name, description: p.description || "", price: String(p.price), image_url: p.image_url || "", alcohol_percentage: p.alcohol_percentage ? String(p.alcohol_percentage) : "", volume_ml: p.volume_ml ? String(p.volume_ml) : "", origin_country: p.origin_country || "", is_featured: p.is_featured || false, in_stock: p.in_stock !== false });
+    setFormData({ category_id: p.category_id, subcategory_id: p.subcategory_id || "", name: p.name, description: p.description || "", price: String(p.price), original_price: p.original_price ? String(p.original_price) : "", discount: String(p.discount || 0), image_url: p.image_url || "", alcohol_percentage: p.alcohol_percentage ? String(p.alcohol_percentage) : "", volume_ml: p.volume_ml ? String(p.volume_ml) : "", origin_country: p.origin_country || "", is_featured: p.is_featured || false, in_stock: p.in_stock !== false });
     setIsOpen(true);
   };
 
@@ -60,10 +87,25 @@ const ProductsAdmin = () => {
               <div><Label>Description</Label><Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
               <div className="grid grid-cols-3 gap-4">
                 <div><Label>Price*</Label><Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required /></div>
+                <div><Label>Original Price</Label><Input type="number" step="0.01" value={formData.original_price} onChange={(e) => setFormData({ ...formData, original_price: e.target.value })} placeholder="Before discount" /></div>
+                <div><Label>Discount %</Label><Input type="number" step="0.1" min="0" max="100" value={formData.discount} onChange={(e) => setFormData({ ...formData, discount: e.target.value })} /></div>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
                 <div><Label>Volume (ml)</Label><Input type="number" value={formData.volume_ml} onChange={(e) => setFormData({ ...formData, volume_ml: e.target.value })} /></div>
                 <div><Label>ABV %</Label><Input type="number" step="0.1" value={formData.alcohol_percentage} onChange={(e) => setFormData({ ...formData, alcohol_percentage: e.target.value })} /></div>
               </div>
-              <div><Label>Image URL</Label><Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} /></div>
+              <div>
+                <Label>Image</Label>
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col">
+                    <Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} placeholder="Or paste an image URL" />
+                    <input type="file" accept="image/*" onChange={handleFileChange} className="mt-2" />
+                  </div>
+                  {formData.image_url && (
+                    <img src={formData.image_url} alt={formData.name || 'preview'} className="w-28 h-28 object-cover rounded" />
+                  )}
+                </div>
+              </div>
               <div><Label>Origin Country</Label><Input value={formData.origin_country} onChange={(e) => setFormData({ ...formData, origin_country: e.target.value })} /></div>
               <div className="flex gap-8">
                 <div className="flex items-center gap-2"><Switch checked={formData.is_featured} onCheckedChange={(c) => setFormData({ ...formData, is_featured: c })} /><Label>Featured</Label></div>

@@ -106,6 +106,8 @@ const Index = () => {
                   name={product.name}
                   description={product.description}
                   price={Number(product.price)}
+                  originalPrice={product.original_price ? Number(product.original_price) : undefined}
+                  discount={product.discount || 0}
                   imageUrl={product.image_url}
                   alcoholPercentage={product.alcohol_percentage}
                   volumeMl={product.volume_ml}
@@ -142,7 +144,7 @@ const Index = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-              Experience the <span className="text-gold-gradient">Emperor's Choice</span>
+              Experience the <span className="text-gold-gradient">United's Choice</span>
             </h2>
             <p className="text-gold-200/70 text-lg mb-10">
               Join our exclusive community of spirit enthusiasts and discover 

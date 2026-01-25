@@ -9,6 +9,8 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  // Ensure common image types (including uppercase extensions) are treated as assets
+  assetsInclude: [/\.(png|jpe?g|gif|svg|webp|avif|ico)$/i],
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {

@@ -59,7 +59,7 @@ const Products = () => {
               ))}
             </div>
           ) : products && products.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-max">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -67,6 +67,8 @@ const Products = () => {
                   name={product.name}
                   description={product.description}
                   price={Number(product.price)}
+                  originalPrice={product.original_price ? Number(product.original_price) : undefined}
+                  discount={product.discount || 0}
                   imageUrl={product.image_url}
                   alcoholPercentage={product.alcohol_percentage}
                   volumeMl={product.volume_ml}

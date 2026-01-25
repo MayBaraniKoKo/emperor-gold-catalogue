@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="United 42 logo">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#ffd24d" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="url(#g)" />
+  <g transform="translate(18, 22) scale(0.65)" fill="#fff" stroke="#6b3b00" stroke-width="1">
+    <path d="M25 10c-5 0-9 4-9 9 0 8 14 22 14 22s14-14 14-22c0-5-4-9-9-9-4 0-8 3-10 7-2-4-6-7-10-7z" />
+  </g>
+</svg>

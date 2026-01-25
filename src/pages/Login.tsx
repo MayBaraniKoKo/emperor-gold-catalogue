@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Wine } from "lucide-react";
+import logoUrl from "@/assets/United42.jpg"
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,12 +37,10 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 gold-gradient rounded-full flex items-center justify-center mx-auto mb-4 shadow-gold">
-            <Wine className="w-8 h-8 text-primary-foreground" />
-          </div>
+        <div className="text-center mb-10 flex flex-col items-center">
+          <img src={logoUrl} alt="United 42 logo" className="w-24 h-24 rounded-full object-cover shadow-gold mb-6" />
           <h1 className="font-display text-3xl font-bold text-gold-gradient mb-2">
-            42 Emperor
+            United 42
           </h1>
           <p className="text-muted-foreground">Admin Portal</p>
         </div>
@@ -59,7 +58,7 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@42emperor.com"
+                placeholder="admin@united42.com"
                 required
                 className="border-border focus:ring-primary"
               />

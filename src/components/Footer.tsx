@@ -1,7 +1,10 @@
 import { Wine, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import logoUrl from "@/assets/United42.jpg";
+import { useCategories } from "@/hooks/useCategories";
 
 const Footer = () => {
+  const { data: categories } = useCategories();
   return (
     <footer className="bg-foreground text-gold-100">
       {/* Top accent */}
@@ -12,10 +15,8 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 gold-gradient rounded-full flex items-center justify-center">
-                <Wine className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="font-display text-xl font-bold text-gold-gradient">42 Emperor</span>
+              <img src={logoUrl} alt="United 42 logo" className="w-10 h-10 rounded-full object-cover shadow-gold" />
+            <span className="font-display text-xl font-bold text-gold-gradient">United 42</span>
             </div>
             <p className="text-gold-200/70 text-sm leading-relaxed">
               Your premier destination for the world's finest spirits. 
@@ -49,10 +50,15 @@ const Footer = () => {
           <div>
             <h4 className="font-display text-lg font-semibold text-gold-100 mb-6">Categories</h4>
             <ul className="space-y-3">
-              <li className="text-gold-200/70 text-sm">Whiskey</li>
-              <li className="text-gold-200/70 text-sm">Wine</li>
-              <li className="text-gold-200/70 text-sm">Champagne</li>
-              <li className="text-gold-200/70 text-sm">Cognac</li>
+              {categories && categories.length > 0 ? (
+                categories.slice(0, 4).map((category) => (
+                  <li key={category.id} className="text-gold-200/70 text-sm">
+                    {category.name}
+                  </li>
+                ))
+              ) : (
+                <li className="text-gold-200/70 text-sm">Loading...</li>
+              )}
             </ul>
           </div>
 
@@ -61,16 +67,14 @@ const Footer = () => {
             <h4 className="font-display text-lg font-semibold text-gold-100 mb-6">Contact</h4>
             <ul className="space-y-4">
               <li className="flex items-center gap-3 text-gold-200/70 text-sm">
-                <MapPin className="w-4 h-4 text-gold-400" />
-                123 Premium Ave, City
-              </li>
-              <li className="flex items-center gap-3 text-gold-200/70 text-sm">
                 <Phone className="w-4 h-4 text-gold-400" />
-                +1 (555) 123-4567
+                09 88171 42 42 <br/>
+                09 761 42 42 42 <br/>
+                09 978 42 42 42 <br/>
               </li>
               <li className="flex items-center gap-3 text-gold-200/70 text-sm">
                 <Mail className="w-4 h-4 text-gold-400" />
-                info@42emperor.com
+                united424242@gmail.com
               </li>
             </ul>
           </div>
@@ -80,7 +84,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gold-800">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-gold-200/50 text-sm">
-              © 2024 42 Emperor. All rights reserved.
+              © 2026 United 42. All rights reserved.
             </p>
             <p className="text-gold-200/50 text-xs">
               Please drink responsibly. Must be 21+ to purchase.
