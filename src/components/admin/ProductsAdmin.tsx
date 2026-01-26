@@ -35,20 +35,33 @@ const ProductsAdmin = () => {
     if (!file) return;
 
     try {
+      console.log('Starting upload for file:', file.name);
+      
       // Create a safe unique filename
       const ext = file.name.split('.').pop();
       const fileName = `${Date.now()}.${ext}`;
       const filePath = `${fileName}`;
 
-      const { data, error } = await supabase.storage.from('products').upload(filePath, file, { upsert: true });
-      if (error) throw error;
+      console.log('Uploading to Products bucket with path:', filePath);
+      
+      const { data, error } = await supabase.storage.from('Products').upload(filePath, file, { upsert: true });
+      
+      if (error) {
+        console.error('Upload error:', error);
+        throw error;
+      }
 
-      const { data: publicData } = await supabase.storage.from('products').getPublicUrl(filePath);
+      console.log('Upload successful, data:', data);
+      
+      const { data: publicData } = await supabase.storage.from('Products').getPublicUrl(filePath);
       const publicUrl = (publicData as any)?.publicUrl ?? "";
 
+      console.log('Public URL:', publicUrl);
+      
       setFormData((prev) => ({ ...prev, image_url: publicUrl }));
-      toast({ title: 'Image uploaded', description: 'Product image uploaded successfully' });
+      toast({ title: 'Success', description: 'Product image uploaded successfully' });
     } catch (err: any) {
+      console.error('Full error object:', err);
       toast({ title: 'Upload failed', description: err.message || String(err), variant: 'destructive' });
     }
   };
@@ -96,13 +109,18 @@ const ProductsAdmin = () => {
               </div>
               <div>
                 <Label>Image</Label>
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col">
+                <div className="flex items-start gap-4">
+                  <div className="flex flex-col flex-1">
                     <Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} placeholder="Or paste an image URL" />
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="mt-2" />
+                    <div className="mt-2 border-2 border-dashed border-border rounded-lg p-4 text-center cursor-pointer hover:border-primary/50 transition-colors">
+                      <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="image-upload" />
+                      <label htmlFor="image-upload" className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+                        Click to upload image or drag and drop
+                      </label>
+                    </div>
                   </div>
                   {formData.image_url && (
-                    <img src={formData.image_url} alt={formData.name || 'preview'} className="w-28 h-28 object-cover rounded" />
+                    <img src={formData.image_url} alt={formData.name || 'preview'} className="w-28 h-28 object-cover rounded border border-border" />
                   )}
                 </div>
               </div>
