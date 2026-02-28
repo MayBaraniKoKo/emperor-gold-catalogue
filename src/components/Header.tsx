@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Wine, User, LogOut, ShoppingCart } from "lucide-react";
-import logoUrl from "@/assets/United42.jpg"
+import logoUrl from "@/assets/United42.JPG"
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
