@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Wine } from "lucide-react";
-import logoUrl from "@/assets/United42.jpg"
+import logoUrl from "@/assets/United42.JPG"
 
 const Login = () => {
   const [email, setEmail] = useState("");
