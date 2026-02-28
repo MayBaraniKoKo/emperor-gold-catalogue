@@ -8,7 +8,7 @@ import CategoriesAdmin from "@/components/admin/CategoriesAdmin";
 import SubcategoriesAdmin from "@/components/admin/SubcategoriesAdmin";
 import ProductsAdmin from "@/components/admin/ProductsAdmin";
 import OrdersAdmin from "@/components/admin/OrdersAdmin";
-import logoUrl from "@/assets/United42.jpg";
+import logoUrl from "@/assets/United42.JPG";
 
 const Admin = () => {
   const { user, loading, signOut } = useAuth();
