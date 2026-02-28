@@ -1,6 +1,6 @@
 import { Wine, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import logoUrl from "@/assets/United42.jpg";
+import logoUrl from "@/assets/United42.JPG";
 import { useCategories } from "@/hooks/useCategories";
 
 const Footer = () => {
