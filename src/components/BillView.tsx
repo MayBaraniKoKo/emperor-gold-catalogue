@@ -1,7 +1,7 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import logoUrl from "@/assets/United42.jpg";
+import logoUrl from "@/assets/United42.JPG";
 
 type OrderItem = {
   id: string;
