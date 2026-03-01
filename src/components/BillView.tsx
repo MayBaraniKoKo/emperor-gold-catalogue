@@ -295,8 +295,8 @@ const BillView = ({ order, onClose, onPrint }: BillViewProps) => {
                 <tr>
                   <td>${item.name}</td>
                   <td class="text-center">${item.quantity}</td>
-                  <td class="text-right">$${Number(item.price).toFixed(2)}</td>
-                  <td class="text-right"><strong>$${(item.price * item.quantity).toFixed(2)}</strong></td>
+                  <td class="text-right">MMK ${Number(item.price).toFixed(2)}</td>
+                  <td class="text-right"><strong>MMK ${ (item.price * item.quantity).toFixed(2) }</strong></td>
                 </tr>
               `).join("")}
             </tbody>
@@ -305,19 +305,19 @@ const BillView = ({ order, onClose, onPrint }: BillViewProps) => {
           <!-- Totals -->
           <div class="totals">
             <div class="totals-section">
-              <div class="total-row">
+                <div class="total-row">
                 <span>Subtotal:</span>
-                <span><strong>$${subtotal.toFixed(2)}</strong></span>
+                <span><strong>MMK ${subtotal.toFixed(2)}</strong></span>
               </div>
               ${debitAmount > 0 ? `
-                <div class="total-row debit">
+                  <div class="total-row debit">
                   <span>Debit Amount:</span>
-                  <span><strong>-$${debitAmount.toFixed(2)}</strong></span>
+                  <span><strong>-MMK ${debitAmount.toFixed(2)}</strong></span>
                 </div>
               ` : ""}
               <div class="total-final">
                 <span>Total Amount Due:</span>
-                <span>$${finalTotal.toFixed(2)}</span>
+                <span>MMK ${finalTotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -552,9 +552,9 @@ const BillView = ({ order, onClose, onPrint }: BillViewProps) => {
                   <tr key={item.id} className="border-b">
                     <td className="py-3 px-2">{item.name}</td>
                     <td className="text-center py-3 px-2">{item.quantity}</td>
-                    <td className="text-right py-3 px-2">${Number(item.price).toFixed(2)}</td>
-                    <td className="text-right py-3 px-2 font-semibold">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      <td className="text-right py-3 px-2">MMK {Number(item.price).toFixed(2)}</td>
+                      <td className="text-right py-3 px-2 font-semibold">
+                        MMK {(item.price * item.quantity).toFixed(2)}
                     </td>
                   </tr>
                 ))}
@@ -568,17 +568,17 @@ const BillView = ({ order, onClose, onPrint }: BillViewProps) => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between py-2 border-b">
                   <span>Subtotal:</span>
-                  <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                  <span className="font-semibold">MMK {subtotal.toFixed(2)}</span>
                 </div>
                 {debitAmount > 0 && (
                   <div className="flex justify-between py-2 border-b text-orange-600">
                     <span>Debit Amount:</span>
-                    <span className="font-semibold">-${debitAmount.toFixed(2)}</span>
+                    <span className="font-semibold">-MMK {debitAmount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between py-3 px-3 bg-gold-gradient rounded font-semibold text-primary-foreground text-base">
                   <span>Total Amount Due:</span>
-                  <span>${finalTotal.toFixed(2)}</span>
+                  <span>MMK {finalTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
