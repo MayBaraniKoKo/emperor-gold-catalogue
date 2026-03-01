@@ -317,7 +317,7 @@ const OrdersAdmin = () => {
                   <TableCell className="font-medium text-sm">{o.id.slice(0, 8)}</TableCell>
                   <TableCell>{o.name}</TableCell>
                   <TableCell>{format(new Date(o.created_at), "dd/MM/yy")}</TableCell>
-                  <TableCell>${Number(o.total).toFixed(2)}</TableCell>
+                  <TableCell>MMK {Number(o.total).toFixed(2)}</TableCell>
                   <TableCell>
                     <select
                       value={editingStatus[o.id] || o.status || "pending"}
@@ -389,7 +389,7 @@ const OrdersAdmin = () => {
                         {o.note && <div className="mb-2"> <strong>Note:</strong> {o.note} </div>}
                         {o.status && <div className="mb-2"> <strong>Status:</strong> {o.status} </div>}
                         {o.remark && <div className="mb-2"> <strong>Remark:</strong> {o.remark} </div>}
-                        {o.debit_money !== undefined && <div className="mb-2"> <strong>Debit Money:</strong> ${Number(o.debit_money).toFixed(2)} </div>}
+                        {o.debit_money !== undefined && <div className="mb-2"> <strong>Debit Money:</strong> MMK {Number(o.debit_money).toFixed(2)} </div>}
 
                         <div className="mt-4">
                           <h4 className="font-medium mb-2">Items</h4>
@@ -403,9 +403,9 @@ const OrdersAdmin = () => {
                                 )}
                                 <div className="flex-1">
                                   <div className="font-medium">{it.name}</div>
-                                  <div className="text-muted-foreground text-sm">{it.quantity} × ${it.price.toFixed(2)}</div>
+                                  <div className="text-muted-foreground text-sm">{it.quantity} × MMK {it.price.toFixed(2)}</div>
                                 </div>
-                                <div className="font-medium">${(it.price * it.quantity).toFixed(2)}</div>
+                                <div className="font-medium">MMK {(it.price * it.quantity).toFixed(2)}</div>
                               </div>
                             ))}
                           </div>
