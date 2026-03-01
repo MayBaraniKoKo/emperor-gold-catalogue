@@ -41,16 +41,16 @@ const ProductDetail = () => {
                     <>
                       <div className="flex items-center gap-3">
                         <span className="text-lg text-muted-foreground line-through">
-                          ${Number(product.original_price).toFixed(2)}
+                          MMK {Number(product.original_price).toFixed(2)}
                         </span>
                         <span className="px-3 py-1 bg-destructive text-destructive-foreground rounded-full text-sm font-medium">
                           {product.discount.toFixed(1)}% OFF
                         </span>
                       </div>
-                      <div className="font-display text-3xl font-bold text-gold-gradient">${Number(product.price).toFixed(2)}</div>
+                      <div className="font-display text-3xl font-bold text-gold-gradient">MMK {Number(product.price).toFixed(2)}</div>
                     </>
                   ) : (
-                    <div className="font-display text-3xl font-bold text-gold-gradient">${Number(product.price).toFixed(2)}</div>
+                    <div className="font-display text-3xl font-bold text-gold-gradient">MMK {Number(product.price).toFixed(2)}</div>
                   )}
                 </div>
               </div>
