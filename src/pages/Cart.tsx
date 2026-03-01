@@ -1,80 +1,96 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { useCart } from "@/hooks/useCart";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import * as React from "react";
+import type { ReactNode } from "react";
+import { toast as showToast } from "@/hooks/use-toast";
+import type { Product } from "@/hooks/useProducts";
 
-const Cart = () => {
-  const { items, updateQuantity, removeFromCart, clearCart, totalPrice, totalItems } = useCart();
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  discount?: number;
+  quantity: number;
+  image_url?: string | null;
+}
 
-  if (items.length === 0) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 pt-24 pb-16">
-          <div className="container mx-auto px-6 py-20 text-center">
-            <h2 className="font-display text-2xl font-bold mb-4">Your Cart is empty</h2>
-            <p className="text-muted-foreground mb-6">Add some products from the catalog.</p>
-            <Button asChild>
-              <a href="/products" className="gold-gradient text-primary-foreground px-6 py-3 rounded inline-block">Browse products</a>
-            </Button>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
+interface CartContextValue {
+  items: CartItem[];
+  addToCart: (p: { id: string; name: string; price: number; discount?: number; image_url?: string | null }, qty?: number) => void;
+  removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, qty: number) => void;
+  clearCart: () => void;
+  totalItems: number;
+  totalPrice: number;
+}
+
+const CART_STORAGE_KEY = "_egc_cart_v1";
+
+const CartContext = React.createContext<CartContextValue | undefined>(undefined);
+
+function readFromStorage(): CartItem[] {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as CartItem[];
+  } catch (err) {
+    return [];
   }
+}
 
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 pt-24 pb-16">
-        <div className="container mx-auto px-6 py-20">
-          <h2 className="font-display text-3xl font-bold mb-6">Your Cart</h2>
+function writeToStorage(items: CartItem[]) {
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  } catch (err) {
+    // ignore
+  }
+}
 
-          <div className="space-y-4">
-            {items.map((it) => (
-              <div key={it.id} className="flex items-center gap-4 bg-card rounded p-4">
-                {it.image_url ? <img src={it.image_url} alt={it.name} className="w-24 h-24 object-cover rounded" /> : <div className="w-24 h-24 bg-secondary rounded" />}
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium">{it.name}</div>
-                      <div className="text-muted-foreground text-sm">MMK {it.price.toFixed(2)}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-medium">MMK {(it.price * it.quantity).toFixed(2)}</div>
-                    </div>
-                  </div>
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [items, setItems] = React.useState<CartItem[]>(() => readFromStorage());
 
-                  <div className="mt-3 flex items-center gap-2">
-                    <Input type="number" min={1} value={String(it.quantity)} onChange={(e) => updateQuantity(it.id, Math.max(1, Number(e.target.value) || 1))} className="w-24" />
-                    <Button variant="ghost" onClick={() => removeFromCart(it.id)}>Remove</Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+  React.useEffect(() => {
+    writeToStorage(items);
+  }, [items]);
 
-          <div className="mt-8 flex items-center justify-between">
-              <div>
-                <div className="text-muted-foreground">Total items: {totalItems}</div>
-                <div className="font-display text-2xl font-bold">MMK {totalPrice.toFixed(2)}</div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Button variant="outline" onClick={() => clearCart()}>Clear cart</Button>
-                {/* use Link component so routing stays client‑side and avoids 404 on refresh */}
-                <Link to="/checkout">
-                  <Button className="gold-gradient">Proceed to Checkout</Button>
-                </Link>
-              </div>
-            </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+  const addToCart = (p: { id: string; name: string; price: number; discount?: number; image_url?: string | null }, qty = 1) => {
+    setItems((prev) => {
+      const idx = prev.findIndex((it) => it.id === p.id);
+      if (idx >= 0) {
+        const copy = [...prev];
+        copy[idx] = { ...copy[idx], quantity: copy[idx].quantity + qty };
+        return copy;
+      }
+      return [...prev, { id: p.id, name: p.name, price: p.price, discount: p.discount, quantity: qty, image_url: p.image_url }];
+    });
+
+    showToast({ title: "Added to cart", description: `${qty} × ${p.name}` });
+  };
+
+  const removeFromCart = (id: string) => {
+    setItems((prev) => prev.filter((it) => it.id !== id));
+    showToast({ title: "Removed from cart" });
+  };
+
+  const updateQuantity = (id: string, qty: number) => {
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, quantity: qty } : it)).filter((i) => i.quantity > 0));
+  };
+
+  const clearCart = () => {
+    setItems([]);
+  };
+
+  const totalItems = items.reduce((s, it) => s + it.quantity, 0);
+  const totalPrice = items.reduce((s, it) => {
+    const itemPrice = it.discount && it.discount > 0 ? it.price * (1 - it.discount / 100) : it.price;
+    return s + it.quantity * itemPrice;
+  }, 0);
+
+  const value: CartContextValue = React.useMemo(() => ({ items, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice }), [items]);
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
-export default Cart;
+export function useCart() {
+  const ctx = React.useContext(CartContext);
+  if (!ctx) throw new Error("useCart must be used within a CartProvider");
+  return ctx;
+}
