@@ -81,13 +81,13 @@ const ProductCard = ({
               {name}
             </h3>
             <div className="flex flex-col items-end gap-1">
-              {discount > 0 && originalPrice ? (
+              {discount > 0 ? (
                 <>
                   <span className="text-sm text-muted-foreground line-through">
-                    MMK {originalPrice.toFixed(2)}
+                    MMK {price.toFixed(2)}
                   </span>
                   <span className="font-display text-xl font-bold text-gold-gradient whitespace-nowrap">
-                    MMK {price.toFixed(2)}
+                    MMK {(price * (1 - discount / 100)).toFixed(2)}
                   </span>
                 </>
               ) : (
