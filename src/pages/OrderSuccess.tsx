@@ -20,7 +20,7 @@ const OrderSuccess = () => {
                 <div><strong>Name:</strong> {order.name}</div>
                 <div><strong>Phone:</strong> {order.phone}</div>
                 <div><strong>Address:</strong> {order.address}</div>
-                <div><strong>Total:</strong> ${Number(order.total).toFixed(2)}</div>
+                <div><strong>Total:</strong> MMK {Number(order.total).toFixed(2)}</div>
                 <div className="mt-2 text-muted-foreground text-sm">We will contact you shortly to confirm delivery.</div>
               </div>
             </div>
