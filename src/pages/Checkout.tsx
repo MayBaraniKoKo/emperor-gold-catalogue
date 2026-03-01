@@ -50,15 +50,17 @@ const Checkout = () => {
 
     // Try to save server-side to Supabase orders table
     try {
+      const orderNumber = `ORD_${Date.now()}`;
       const { data: inserted, error: insertErr } = await (supabase as any)
         .from("orders")
         .insert([
           {
-            name: localOrder.name,
-            phone: localOrder.phone,
-            address: localOrder.address,
+            order_number: orderNumber,
+            customer_name: localOrder.name,
+            customer_phone: localOrder.phone,
+            customer_address: localOrder.address,
             items: localOrder.items,
-            total: localOrder.total,
+            total_price: localOrder.total,
             status: "pending",
             note: localOrder.note,
             remark: "",
