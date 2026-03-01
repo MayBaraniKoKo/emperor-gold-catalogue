@@ -37,20 +37,20 @@ const ProductDetail = () => {
                   <p className="text-muted-foreground mt-2">{product.origin_country}</p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  {product.discount > 0 && product.original_price ? (
+                  {product.discount > 0 ? (
                     <>
                       <div className="flex items-center gap-3">
                         <span className="text-lg text-muted-foreground line-through">
-                          ${Number(product.original_price).toFixed(2)}
+                          MMK {Number(product.price).toFixed(2)}
                         </span>
                         <span className="px-3 py-1 bg-destructive text-destructive-foreground rounded-full text-sm font-medium">
                           {product.discount.toFixed(1)}% OFF
                         </span>
                       </div>
-                      <div className="font-display text-3xl font-bold text-gold-gradient">${Number(product.price).toFixed(2)}</div>
+                      <div className="font-display text-3xl font-bold text-gold-gradient">MMK {(Number(product.price) * (1 - product.discount / 100)).toFixed(2)}</div>
                     </>
                   ) : (
-                    <div className="font-display text-3xl font-bold text-gold-gradient">${Number(product.price).toFixed(2)}</div>
+                    <div className="font-display text-3xl font-bold text-gold-gradient">MMK {Number(product.price).toFixed(2)}</div>
                   )}
                 </div>
               </div>
