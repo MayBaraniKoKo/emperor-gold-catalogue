@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const CategoriesAdmin = () => {
   const { data: categories, isLoading } = useCategories();
@@ -17,6 +19,27 @@ const CategoriesAdmin = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({ name: "", description: "", image_url: "" });
+  const { toast } = useToast();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const ext = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${ext}`;
+      const filePath = `categories/${fileName}`;
+      const { data, error } = await supabase.storage.from('Products').upload(filePath, file, { upsert: true });
+      if (error) throw error;
+      const { data: publicData } = await supabase.storage.from('Products').getPublicUrl(filePath);
+      const publicUrl = (publicData as any)?.publicUrl ?? "";
+      setFormData((f) => ({ ...f, image_url: publicUrl }));
+      toast({ title: 'Upload successful', description: 'Category image uploaded', });
+    } catch (err: any) {
+      console.error('Upload failed', err);
+      toast({ title: 'Upload failed', description: err.message || String(err), variant: 'destructive' });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +78,18 @@ const CategoriesAdmin = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div><Label>Name</Label><Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required /></div>
               <div><Label>Description</Label><Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
-              <div><Label>Image URL</Label><Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} /></div>
+              <div><Label>Image URL</Label>
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
+                    <Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} />
+                    <div className="mt-2 border-2 border-dashed border-border rounded-lg p-3 text-center">
+                      <input id="category-image-upload" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                      <label htmlFor="category-image-upload" className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">Click to upload image</label>
+                    </div>
+                  </div>
+                  {formData.image_url && (<img src={formData.image_url} alt={formData.name || 'preview'} className="w-24 h-24 object-cover rounded border" />)}
+                </div>
+              </div>
               <Button type="submit" className="w-full gold-gradient text-primary-foreground">{editingCategory ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>
