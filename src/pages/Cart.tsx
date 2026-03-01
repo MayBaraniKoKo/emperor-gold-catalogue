@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const { items, updateQuantity, removeFromCart, clearCart, totalPrice, totalItems } = useCart();
@@ -57,17 +58,18 @@ const Cart = () => {
           </div>
 
           <div className="mt-8 flex items-center justify-between">
-            <div>
-              <div className="text-muted-foreground">Total items: {totalItems}</div>
-              <div className="font-display text-2xl font-bold">${totalPrice.toFixed(2)}</div>
+              <div>
+                <div className="text-muted-foreground">Total items: {totalItems}</div>
+                <div className="font-display text-2xl font-bold">${totalPrice.toFixed(2)}</div>
+              </div>
+              <div className="flex items-center gap-4">
+                <Button variant="outline" onClick={() => clearCart()}>Clear cart</Button>
+                {/* use Link component so routing stays client‑side and avoids 404 on refresh */}
+                <Link to="/checkout">
+                  <Button className="gold-gradient">Proceed to Checkout</Button>
+                </Link>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Button variant="outline" onClick={() => clearCart()}>Clear cart</Button>
-              <a href="/checkout">
-                <Button className="gold-gradient">Proceed to Checkout</Button>
-              </a>
-            </div>
-          </div>
         </div>
       </main>
       <Footer />
