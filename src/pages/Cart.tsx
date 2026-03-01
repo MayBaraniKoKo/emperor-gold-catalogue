@@ -41,10 +41,10 @@ const Cart = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="font-medium">{it.name}</div>
-                      <div className="text-muted-foreground text-sm">${it.price.toFixed(2)}</div>
+                      <div className="text-muted-foreground text-sm">MMK {it.price.toFixed(2)}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium">${(it.price * it.quantity).toFixed(2)}</div>
+                      <div className="font-medium">MMK {(it.price * it.quantity).toFixed(2)}</div>
                     </div>
                   </div>
 
@@ -60,7 +60,7 @@ const Cart = () => {
           <div className="mt-8 flex items-center justify-between">
               <div>
                 <div className="text-muted-foreground">Total items: {totalItems}</div>
-                <div className="font-display text-2xl font-bold">${totalPrice.toFixed(2)}</div>
+                <div className="font-display text-2xl font-bold">MMK {totalPrice.toFixed(2)}</div>
               </div>
               <div className="flex items-center gap-4">
                 <Button variant="outline" onClick={() => clearCart()}>Clear cart</Button>
