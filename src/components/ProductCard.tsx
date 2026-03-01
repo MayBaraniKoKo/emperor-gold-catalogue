@@ -81,9 +81,20 @@ const ProductCard = ({
               {name}
             </h3>
             <div className="flex flex-col items-end gap-1">
-              <span className="font-display text-xl font-bold text-gold-gradient whitespace-nowrap">
-                MMK {price.toFixed(2)}
-              </span>
+              {discount > 0 && originalPrice ? (
+                <>
+                  <span className="text-sm text-muted-foreground line-through">
+                    MMK {originalPrice.toFixed(2)}
+                  </span>
+                  <span className="font-display text-xl font-bold text-gold-gradient whitespace-nowrap">
+                    MMK {price.toFixed(2)}
+                  </span>
+                </>
+              ) : (
+                <span className="font-display text-xl font-bold text-gold-gradient whitespace-nowrap">
+                  MMK {price.toFixed(2)}
+                </span>
+              )}
             </div>
           </div>
 
