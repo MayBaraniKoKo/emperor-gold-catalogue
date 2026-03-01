@@ -147,17 +147,17 @@ const Checkout = () => {
 
                     <div className="flex-1">
                       <div className="font-medium">{it.name}</div>
-                      <div className="text-muted-foreground text-sm">{it.quantity} × ${it.price.toFixed(2)}</div>
+                      <div className="text-muted-foreground text-sm">{it.quantity} × MMK {it.price.toFixed(2)}</div>
                     </div>
 
-                    <div className="font-medium">${(it.price * it.quantity).toFixed(2)}</div>
+                    <div className="font-medium">MMK {(it.price * it.quantity).toFixed(2)}</div>
                   </div>
                 ))}
               </div>
 
               <div className="flex items-center justify-between mt-2">
                 <div className="text-muted-foreground">Total</div>
-                <div className="font-display text-xl font-bold text-gold-gradient">${totalPrice.toFixed(2)}</div>
+                <div className="font-display text-xl font-bold text-gold-gradient">MMK {totalPrice.toFixed(2)}</div>
               </div>
             </div>
 
