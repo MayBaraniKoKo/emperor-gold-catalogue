@@ -98,11 +98,17 @@ const ProductsAdmin = () => {
               </div>
               <div><Label>Name*</Label><Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required /></div>
               <div><Label>Description</Label><Textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} /></div>
-              <div className="grid grid-cols-3 gap-4">
-                <div><Label>Price*</Label><Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required /></div>
-                <div><Label>Original Price</Label><Input type="number" step="0.01" value={formData.original_price} onChange={(e) => setFormData({ ...formData, original_price: e.target.value })} placeholder="Before discount" /></div>
-                <div><Label>Discount %</Label><Input type="number" step="0.1" min="0" max="100" value={formData.discount} onChange={(e) => setFormData({ ...formData, discount: e.target.value })} /></div>
+              <div className="grid grid-cols-4 gap-4">
+                <div><Label>Original Price (Admin Only)</Label><Input type="number" step="0.01" value={formData.original_price} onChange={(e) => setFormData({ ...formData, original_price: e.target.value })} placeholder="For profit calculation" /></div>
+                <div><Label>Price*</Label><Input type="number" step="0.01" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required placeholder="Base selling price" /></div>
+                <div><Label>Discount %</Label><Input type="number" step="0.1" min="0" max="100" value={formData.discount} onChange={(e) => setFormData({ ...formData, discount: e.target.value })} placeholder="0 for no discount" /></div>
+                <div><Label>Discount Price (Auto)</Label><Input type="number" step="0.01" value={formData.price && formData.discount ? (Number(formData.price) * (1 - Number(formData.discount) / 100)).toFixed(2) : formData.price} disabled className="opacity-70" /></div>
               </div>
+              {formData.price && formData.discount && Number(formData.discount) > 0 && (
+                <div className="text-xs text-muted-foreground bg-secondary/50 p-3 rounded">
+                  <strong>Calculation:</strong> Price: MMK {Number(formData.price).toFixed(2)} − {formData.discount}% = Discount Price: MMK {(Number(formData.price) * (1 - Number(formData.discount) / 100)).toFixed(2)}
+                </div>
+              )}
               <div className="grid grid-cols-3 gap-4">
                 <div><Label>Volume (ml)</Label><Input type="number" value={formData.volume_ml} onChange={(e) => setFormData({ ...formData, volume_ml: e.target.value })} /></div>
                 <div><Label>ABV %</Label><Input type="number" step="0.1" value={formData.alcohol_percentage} onChange={(e) => setFormData({ ...formData, alcohol_percentage: e.target.value })} /></div>
@@ -136,13 +142,15 @@ const ProductsAdmin = () => {
       </div>
       {isLoading ? <p>Loading...</p> : (
         <Table>
-          <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Category</TableHead><TableHead>Price</TableHead><TableHead className="w-24">Actions</TableHead></TableRow></TableHeader>
+          <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Category</TableHead><TableHead>Original Price</TableHead><TableHead>Price</TableHead><TableHead>Discount %</TableHead><TableHead className="w-24">Actions</TableHead></TableRow></TableHeader>
           <TableBody>
             {products?.map((p) => (
               <TableRow key={p.id}>
                 <TableCell className="font-medium flex items-center gap-2">{p.is_featured && <Star className="w-4 h-4 text-primary fill-current" />}{p.name}</TableCell>
                 <TableCell className="text-muted-foreground">{getCategoryName(p.category_id)}</TableCell>
-                <TableCell>${Number(p.price).toFixed(2)}</TableCell>
+                <TableCell className="text-muted-foreground text-sm">{p.original_price ? `MMK ${Number(p.original_price).toFixed(2)}` : "-"}</TableCell>
+                <TableCell className="text-sm">MMK {Number(p.price).toFixed(2)}</TableCell>
+                <TableCell className="text-sm">{p.discount || 0}%</TableCell>
                 <TableCell><div className="flex gap-2"><Button variant="ghost" size="sm" onClick={() => handleEdit(p)}><Pencil className="w-4 h-4" /></Button><Button variant="ghost" size="sm" onClick={() => deleteProduct.mutateAsync(p.id)}><Trash2 className="w-4 h-4 text-destructive" /></Button></div></TableCell>
               </TableRow>
             ))}
